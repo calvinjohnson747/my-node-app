@@ -15,7 +15,7 @@ COPY server.js .
 COPY models.js .
 
 # Copy the static folder to the working directory
-COPY ./static .
+COPY static ./static 
 
 # Expose the port the app runs on
 EXPOSE 3000
