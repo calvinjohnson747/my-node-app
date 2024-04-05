@@ -22,7 +22,7 @@ jobs:
             docker push calvinjohnson747/my-node-app
   deploy:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:latest
     working_directory: ~/repo
     steps:
       - checkout
