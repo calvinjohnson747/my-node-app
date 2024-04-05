@@ -1,32 +1,50 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:node:.
 version: 2.1
 orbs:
   node: circleci/node@5
 jobs:
-  test-node:
-    # Install node dependencies and run tests
+  build:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Build Docker image
+          command: docker build -t your-docker-username/your-image-name .
+      - run:
+          name: Push Docker image to Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker push your-docker-username/your-image-name
+  test:
     executor: node/default
+    working_directory: ~/repo
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
       - run:
           name: Run tests
-          command: echo \"No test specified in package.json\"
+          command: npm test
   deploy:
-    # This is an example deploy job, not actually used by the workflow
     docker:
       - image: cimg/base:stable
     steps:
-      # Replace this with steps to deploy to users
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Pull Docker image from Docker Hub
+          command: docker pull your-docker-username/your-image-name
+      - run:
+          name: Run Docker container
+          command: docker run -d -p 8080:8080 your-docker-username/your-image-name
 workflows:
-  build-and-test:
+  build-test-and-deploy:
     jobs:
-      - test-node
-    # - deploy:
-    #     requires:
-    #       - test-node
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
