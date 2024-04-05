@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Job = require('./models');
 const path = require('path');
+const cron = require('node-cron')
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,8 +32,21 @@ app.use(express.json());
 
 app.use(express.urlencoded({extended: true}));
 
+let requestCount = 0;
+
+// Define a function to reset the count to 0
+const resetCount = () => {
+    requestCount = 0;
+    console.log('Request count reset to 0.');
+};
+
+// Schedule the task to reset count daily at midnight (00:00)
+cron.schedule('0 0 * * *', resetCount);
+
 app.post('/jobs', async (req, res) => {
     try {
+
+        requestCount ++;
         // Create a new user document
         const job = new Job({
             name: req.body.name,
@@ -42,7 +56,7 @@ app.post('/jobs', async (req, res) => {
         console.log(req.body.url);
         // Save the user document to the database
         await job.save();
-        res.status(201).send('User created successfully');
+        res.status(201).json({message: 'User created successfully', count:requestCount});
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).send('Internal Server Error');
