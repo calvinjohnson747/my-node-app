@@ -12,12 +12,12 @@ jobs:
           pkg-manager: npm
       - run:
           name: Build Docker image
-          command: docker build -t your-docker-username/your-image-name .
+          command: docker build -t calvinjohnson747/my-node-app:latest .
       - run:
           name: Push Docker image to Docker Hub
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker push your-docker-username/your-image-name
+            docker push calvinjohnson747/my-node-app:latest
   test:
     executor: node/default
     working_directory: ~/repo
@@ -34,10 +34,10 @@ jobs:
     steps:
       - run:
           name: Pull Docker image from Docker Hub
-          command: docker pull your-docker-username/your-image-name
+          command: docker pull calvinjohnson747/my-node-app:latest
       - run:
           name: Run Docker container
-          command: docker run -d -p 8080:8080 your-docker-username/your-image-name
+          command: docker run -d -p 8080:8080 calvinjohnson747/my-node-app:latest
 workflows:
   build-test-and-deploy:
     jobs:
