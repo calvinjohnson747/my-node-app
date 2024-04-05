@@ -24,6 +24,11 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Pull Docker image from Docker Hub
           command: docker pull calvinjohnson747/my-node-app
