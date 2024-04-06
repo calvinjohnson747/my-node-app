@@ -41,6 +41,7 @@
     <div class="col-md-6">
       <div class="form-container">
         <h1 class="text-center mb-4">My Jobs</h1>
+        <h4 class="text-center">Job Count: <span id="jobCount">Loading...</span></h4>
         <br>
         <form action="/jobs" method="POST">
           <div class="input-group">
@@ -63,6 +64,23 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Fetch the count from the server
+  async function fetchJobCount() {
+    try {
+      const response = await fetch('/job-count');
+      const data = await response.json();
+      // Update the count on the HTML page
+      document.getElementById('jobCount').textContent = data.count;
+    } catch (error) {
+      console.error('Error fetching job count:', error);
+    }
+  }
+
+  // Call fetchJobCount function when the page loads
+  window.onload = fetchJobCount;
+</script>
 
 </body>
 </html>

@@ -43,6 +43,10 @@ const resetCount = () => {
 // Schedule the task to reset count daily at midnight (00:00)
 cron.schedule('0 0 * * *', resetCount);
 
+app.get('/job-count', (req, res) => {
+    res.json({ count: requestCount });
+});
+
 app.post('/jobs', async (req, res) => {
     try {
 
